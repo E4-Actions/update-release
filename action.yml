@@ -9,9 +9,6 @@ inputs:
   repository:
     description: 'Repository on which to release. Used only if you want to create the release on another repo'
     required: false
-  commitish:
-    description: 'Any branch or commit SHA the Git tag is created from, unused if the Git tag already exists.'
-    required: true
   tag_name:
     description: 'The name of the tag. This should come from the webhook payload, `github.GITHUB_REF` when a user pushes a new tag'
     required: true
@@ -46,12 +43,10 @@ runs:
         )
 
         RELEASE_INFO=$(echo $RESPONSE | jq '.[] | select(.tag_name=="${{ inputs.tag_name }}")')
+        [ -z "$RELEASE_INFO" ] && RELEASE_INFO=$(echo $RESPONSE | jq '.[] | select(.name=="${{ inputs.tag_name }}")')
 
         RELEASE_ID=$(echo "$RELEASE_INFO" | jq '.id')
         echo "RELEASE_ID=$RELEASE_ID" >> "$GITHUB_ENV"
-
-        BODY=$(echo "$RELEASE_INFO" | jq '.body')
-        echo "BODY=$BODY" >> "$GITHUB_ENV"
 
         if [ -z "${{ env.PRERELEASE }}" ]; then
           PRERELEASE=$(echo "$RELEASE_INFO" | jq '.prerelease')
@@ -71,7 +66,7 @@ runs:
           -H "Authorization: Bearer ${{ inputs.github_token }}" \
           -H "X-GitHub-Api-Version: 2022-11-28" \
           https://api.github.com/repos/${{ env.OWNER }}/${{ env.REPOSITORY }}/releases/${{ env.RELEASE_ID }} \
-          -d '{"tag_name":"${{ inputs.tag_name }}","target_commitish":"${{ inputs.commitish }}","name":"${{ inputs.tag_name }}","body":${{ env.BODY }},"draft":false,"prerelease":${{ env.PRERELEASE }}}' \
+          -d '{"tag_name":"${{ inputs.tag_name }}","name":"${{ inputs.tag_name }}","draft":false,"prerelease":${{ env.PRERELEASE }}}' \
         )
 
         STATUS=$(echo $RESPONSE | jq '.status')
