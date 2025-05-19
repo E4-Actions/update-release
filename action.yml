@@ -46,6 +46,7 @@ runs:
         )
 
         RELEASE_INFO=$(echo $RESPONSE | jq '.[] | select(.tag_name=="${{ inputs.tag_name }}")')
+        [ -z "$RELEASE_INFO" ] && RELEASE_INFO=$(echo $RESPONSE | jq '.[] | select(.name=="${{ inputs.tag_name }}")')
 
         RELEASE_ID=$(echo "$RELEASE_INFO" | jq '.id')
         echo "RELEASE_ID=$RELEASE_ID" >> "$GITHUB_ENV"
