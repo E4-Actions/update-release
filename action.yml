@@ -1,0 +1,17 @@
+﻿name: 'Greet'
+inputs:
+  target:
+    description: 'Target to greet'
+    required: false
+runs:
+  using: composite
+  steps:
+    - name: 'Set env'
+      run: |
+        TARGET="${{ github.repository_owner }}"
+        [ -n "${{ inputs.target }}" ] && TARGET="${{ inputs.target }}"
+        echo "TARGET=$TARGET" >> "$GITHUB_ENV"
+      shell: bash
+    - name: 'Greet'
+      run: echo "Hello, ${{ env.TARGET }}!"
+      shell: bash

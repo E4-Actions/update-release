@@ -1,0 +1,21 @@
+﻿name: 'Test Local Action'
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: 'Target'
+        type: string
+        required: false
+
+jobs:
+  test-local-action:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 'Checkout repository'
+        uses: actions/checkout@v4
+      - name: 'Test local action'
+        uses: ./
+        with:
+          target: ${{ inputs.target }}
