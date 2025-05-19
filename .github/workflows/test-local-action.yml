@@ -3,14 +3,27 @@
 on:
   workflow_dispatch:
     inputs:
-      target:
-        description: 'Target'
+      commitish:
+        description: 'Commitish'
         type: string
-        required: false
+        required: true
+        default: 'master'
+      tag_name:
+        description: 'Tag'
+        type: string
+        required: true
+        default: 'v0.1.0'
+      prerelease:
+        description: 'PreRelease'
+        type: boolean
+        required: true
+        default: false
 
 jobs:
   test-local-action:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - name: 'Checkout repository'
@@ -18,4 +31,7 @@ jobs:
       - name: 'Test local action'
         uses: ./
         with:
-          target: ${{ inputs.target }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          commitish: ${{ inputs.commitsh }}
+          tag_name: ${{ inputs.tag_name }}
+          prerelease: ${{ inputs.prerelease }}
