@@ -3,11 +3,6 @@
 on:
   workflow_dispatch:
     inputs:
-      commitish:
-        description: 'Commitish'
-        type: string
-        required: true
-        default: 'master'
       tag_name:
         description: 'Tag'
         type: string
@@ -32,6 +27,5 @@ jobs:
         uses: ./
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          commitish: ${{ inputs.commitsh }}
           tag_name: ${{ inputs.tag_name }}
           prerelease: ${{ inputs.prerelease }}
