@@ -2,7 +2,8 @@
 inputs:
   github_token:
     description: '"Contents" repository permissions (write)'
-    required: true
+    required: false
+    default: ${{ github.token }}
   owner:
     description: 'Owner of the repository if it is not the current one'
     required: false
