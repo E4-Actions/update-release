@@ -57,6 +57,10 @@ runs:
           echo "PRERELEASE=$PRERELEASE" >> "$GITHUB_ENV"
         fi
       shell: bash
+    - name: 'Delete tag'
+      shell: bash
+      run: |
+        git push origin :${{ inputs.tag_name }}
     - name: 'Update release'
       run: |
         if [ -z "${{ env.RELEASE_ID }}" ]; then
